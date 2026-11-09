@@ -63,7 +63,7 @@
 
   .review-container {
     text-align: left;
-    max-height: 350px;
+    max-height: 400px;
     overflow-y: auto;
     background: #ffffff;
     padding: 20px;
@@ -73,8 +73,8 @@
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
   }
   .review-item {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
     border-bottom: 1px dashed #dfe6e9;
   }
   .review-item:last-child {
@@ -83,7 +83,16 @@
     padding-bottom: 0;
   }
   .review-q { font-weight: bold; font-size: 0.95em; line-height: 1.5; margin: 0 0 8px 0; }
-  .review-ans { font-size: 0.9em; margin: 3px 0; }
+  .review-ans { font-size: 0.95em; margin: 5px 0; }
+  .review-explanation { 
+    font-size: 0.9em; 
+    color: #0984e3; 
+    background: #e3f2fd; 
+    padding: 10px; 
+    border-radius: 8px; 
+    margin-top: 10px;
+    line-height: 1.5;
+  }
 
   /* --- クイズ画面 --- */
   .progress {
@@ -289,66 +298,70 @@
   }
 
   let questions = [
-    { type: "choice", text: highlight(baseText1, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["論理構造", "物理構造", "データ構造", "表現"], answerIndex: 0 },
-    { type: "choice", text: highlight(baseText1, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["ディスク", "レジスタ", "メモリ", "キャッシュ"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText1, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["論理構造", "物理構造", "データ構造", "表現"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText1, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["実装", "配置", "格納", "表現"], answerIndex: 3 },
+    { type: "choice", text: highlight(baseText1, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["論理構造", "物理構造", "データ構造", "表現"], answerIndex: 0, explanation: "コンピュータで処理する対象となるデータのまとまりの構造を「論理構造」といいます。" },
+    { type: "choice", text: highlight(baseText1, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["ディスク", "レジスタ", "メモリ", "キャッシュ"], answerIndex: 2, explanation: "データを記憶し、コンピュータで処理するための主記憶装置は「メモリ」です。" },
+    { type: "choice", text: highlight(baseText1, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["論理構造", "物理構造", "データ構造", "表現"], answerIndex: 1, explanation: "論理構造をメモリ上にどう配置するかの実際の構造を「物理構造」といいます。" },
+    { type: "choice", text: highlight(baseText1, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["実装", "配置", "格納", "表現"], answerIndex: 3, explanation: "論理構造を物理構造に従ってメモリ上に実現することを「表現 (representation)」あるいは配置といいます。" },
     
-    { type: "choice", text: highlight(baseText2a, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", choices: ["10", "100", "200", "300"], answerIndex: 0 },
-    { type: "choice", text: highlight(baseText2a, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", choices: ["10", "111", "200", "300"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText2a, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", choices: ["100", "111", "150", "550"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText2a, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", choices: ["100", "200", "300", "550"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText2a, '⑤') + "<br><span class='question-instruction'>⑤に入る数字を選びなさい。</span>", choices: ["50", "100", "150", "300"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText2a, '⑥') + "<br><span class='question-instruction'>⑥に入る数字を選びなさい。</span>", choices: ["100", "111", "150", "200"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText2a, '⑦') + "<br><span class='question-instruction'>⑦に入る数字を選びなさい。</span>", choices: ["100", "200", "300", "550"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText2a, '⑧') + "<br><span class='question-instruction'>⑧に入る数字を選びなさい。</span>", choices: ["10", "100", "200", "300"], answerIndex: 2 },
+    { type: "choice", text: highlight(baseText2a, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", choices: ["10", "100", "200", "300"], answerIndex: 0, explanation: "連結リストの先頭を指すヘッドノードのアドレスは「10」番地です。" },
+    { type: "choice", text: highlight(baseText2a, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", choices: ["10", "111", "200", "300"], answerIndex: 2, explanation: "ヘッドノード(10番地)のポインタ部が指している次のノードのアドレスは「200」番地です。" },
+    { type: "choice", text: highlight(baseText2a, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", choices: ["100", "111", "150", "550"], answerIndex: 1, explanation: "200番地のデータ部は「111」です。このノードの後ろにデータを挿入します。" },
+    { type: "choice", text: highlight(baseText2a, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", choices: ["100", "200", "300", "550"], answerIndex: 1, explanation: "該当するノード（data111）が見つかったため、そのアドレスである「200」を返します。" },
+    { type: "choice", text: highlight(baseText2a, '⑤') + "<br><span class='question-instruction'>⑤に入る数字を選びなさい。</span>", choices: ["50", "100", "150", "300"], answerIndex: 1, explanation: "200番地のポインタ部の値「100」を、新しいノードのポインタ部へ引き継ぎます。" },
+    { type: "choice", text: highlight(baseText2a, '⑥') + "<br><span class='question-instruction'>⑥に入る数字を選びなさい。</span>", choices: ["100", "111", "150", "200"], answerIndex: 2, explanation: "新しく挿入するノードのデータは「150」です。" },
+    { type: "choice", text: highlight(baseText2a, '⑦') + "<br><span class='question-instruction'>⑦に入る数字を選びなさい。</span>", choices: ["100", "200", "300", "550"], answerIndex: 2, explanation: "新しく確保したノードのアドレスは「300」番地です。" },
+    { type: "choice", text: highlight(baseText2a, '⑧') + "<br><span class='question-instruction'>⑧に入る数字を選びなさい。</span>", choices: ["10", "100", "200", "300"], answerIndex: 2, explanation: "元のノード（「200」番地）のポインタ部を、新しいノードのアドレス(300)に更新して繋ぎ直します。" },
 
-    { type: "choice", text: highlight(baseText2b, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", choices: ["30", "50", "100", "200"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText2b, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", choices: ["111", "150", "200", "550"], answerIndex: 3 },
-    { type: "choice", text: highlight(baseText2b, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", choices: ["50", "100", "200", "550"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText2b, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", choices: ["50", "100", "200", "300"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText2b, '⑤') + "<br><span class='question-instruction'>⑤に入る数字を選びなさい。</span>", choices: ["50", "100", "200", "550"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText2b, '⑥') + "<br><span class='question-instruction'>⑥に入る数字を選びなさい。</span>", choices: ["30", "50", "100", "200"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText2b, '⑦') + "<br><span class='question-instruction'>⑦に入る数字を選びなさい。</span>", choices: ["30", "50", "100", "200"], answerIndex: 1 },
+    { type: "choice", text: highlight(baseText2b, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", choices: ["30", "50", "100", "200"], answerIndex: 2, explanation: "200番地は該当しないため、そのポインタ部が指す「100」番地のノードへ移動します。" },
+    { type: "choice", text: highlight(baseText2b, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", choices: ["111", "150", "200", "550"], answerIndex: 3, explanation: "100番地のデータ部は「550」であり、これが削除対象のデータです。" },
+    { type: "choice", text: highlight(baseText2b, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", choices: ["50", "100", "200", "550"], answerIndex: 1, explanation: "該当ノードが見つかったため、そのアドレス「100」を返します。" },
+    { type: "choice", text: highlight(baseText2b, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", choices: ["50", "100", "200", "300"], answerIndex: 2, explanation: "削除するノードの「直前のノード」のアドレスは「200」番地です。" },
+    { type: "choice", text: highlight(baseText2b, '⑤') + "<br><span class='question-instruction'>⑤に入る数字を選びなさい。</span>", choices: ["50", "100", "200", "550"], answerIndex: 1, explanation: "200番地のポインタ部の値は現在「100」です。これを変更します。" },
+    { type: "choice", text: highlight(baseText2b, '⑥') + "<br><span class='question-instruction'>⑥に入る数字を選びなさい。</span>", choices: ["30", "50", "100", "200"], answerIndex: 2, explanation: "削除するノードのアドレスは「100」番地です。" },
+    { type: "choice", text: highlight(baseText2b, '⑦') + "<br><span class='question-instruction'>⑦に入る数字を選びなさい。</span>", choices: ["30", "50", "100", "200"], answerIndex: 1, explanation: "削除するノードのポインタ部「50」を、直前のノード(200番地)のポインタ部に上書きして繋ぎ直します。" },
 
-    { type: "choice", text: highlight(baseText3, '①') + "<br><span class='question-instruction'>①に入るデータを選びなさい。</span>", choices: ["r", "w", "v", "b"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText3, '②') + "<br><span class='question-instruction'>②に入るデータを選びなさい。</span>", choices: ["r", "a", "v", "e"], answerIndex: 2 },
+    { type: "choice", text: highlight(baseText3, '①') + "<br><span class='question-instruction'>①に入るデータを選びなさい。</span>", choices: ["r", "w", "v", "b"], answerIndex: 1, explanation: "キュー(待ち行列)はFIFO(先入れ先出し)です。入れた順「s, t, r, a, w...」に取り出されるため、5番目は「w」です。" },
+    { type: "choice", text: highlight(baseText3, '②') + "<br><span class='question-instruction'>②に入るデータを選びなさい。</span>", choices: ["r", "a", "v", "e"], answerIndex: 2, explanation: "スタックはLIFO(後入れ先出し)です。最後に入れた順「o, d, a, c, o, v...」に取り出されるため、6番目は「v」です。" },
 
-    { type: "choice", text: highlight(baseText5_1, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["上下関係", "順序関係", "同値関係", "集合関係"], answerIndex: 0 },
-    { type: "choice", text: highlight(baseText5_1, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["距離", "集合", "分類", "結合"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText5_1, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 0 },
-    { type: "choice", text: highlight(baseText5_1, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText5_1, '⑤') + "<br><span class='question-instruction'>⑤に入る語句を選びなさい。</span>", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText5_1, '⑥') + "<br><span class='question-instruction'>⑥に入る語句を選びなさい。</span>", choices: ["子", "親", "兄弟", "孫"], answerIndex: 1 },
+    { type: "choice", text: highlight(baseText5_1, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["上下関係", "順序関係", "同値関係", "集合関係"], answerIndex: 0, explanation: "木(ツリー)構造は、データの階層関係や「上下関係」を表すのに適しています。" },
+    { type: "choice", text: highlight(baseText5_1, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["距離", "集合", "分類", "結合"], answerIndex: 2, explanation: "親子関係による「分類」などを表現します。" },
+    { type: "choice", text: highlight(baseText5_1, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 0, explanation: "図の中でデータを格納している○の部分を「ノード(節)」と呼びます。" },
+    { type: "choice", text: highlight(baseText5_1, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 1, explanation: "ノード同士を繋いでいる線のことを「枝(エッジ)」と呼びます。" },
+    { type: "choice", text: highlight(baseText5_1, '⑤') + "<br><span class='question-instruction'>⑤に入る語句を選びなさい。</span>", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 2, explanation: "木構造の頂点にあたる、最も上にあるノードを「根(ルート)」と呼びます。" },
+    { type: "choice", text: highlight(baseText5_1, '⑥') + "<br><span class='question-instruction'>⑥に入る語句を選びなさい。</span>", choices: ["子", "親", "兄弟", "孫"], answerIndex: 1, explanation: "木構造において、各ノードにとっての「親」ノードは常に1つだけです（根ノードは除く）。" },
 
-    { type: "choice", text: highlight(baseText5_2, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["枝", "木", "葉", "根"], answerIndex: 1 },
-    { type: "choice", text: highlight(baseText5_2, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["深さ", "高さ", "度数", "距離"], answerIndex: 2 },
-    { type: "choice", text: highlight(baseText5_2, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["深さ", "高さ", "度数", "距離"], answerIndex: 3 },
-    { type: "choice", text: highlight(baseText5_2, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["枝", "木", "根", "葉"], answerIndex: 0 },
+    { type: "choice", text: highlight(baseText5_2, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["枝", "木", "葉", "根"], answerIndex: 1, explanation: "木の中の特定のノードを根とした、一部分の「木」のことを部分木といいます。" },
+    { type: "choice", text: highlight(baseText5_2, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["深さ", "高さ", "度数", "距離"], answerIndex: 2, explanation: "各ノードが持っている子ノードの数のことを「度数」といいます。" },
+    { type: "choice", text: highlight(baseText5_2, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["深さ", "高さ", "度数", "距離"], answerIndex: 3, explanation: "木の高さは、根から最も遠い葉までの「距離（エッジの数）」で表します。" },
+    { type: "choice", text: highlight(baseText5_2, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["枝", "木", "根", "葉"], answerIndex: 0, explanation: "ノードや「枝」がまったく存在しない木のことを空木(からぎ)と呼びます。" },
 
     {
       type: "input",
       text: "設問6 Ⅰ: 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>横型探索(幅優先探索)</span>をした場合の探索の順序を答えなさい。",
       image: "image_2abc0b.png",
-      answer: "ABCDEFGHIJKLMNOPQ"
+      answer: "ABCDEFGHIJKLMNOPQ",
+      explanation: "横型探索（幅優先探索）は、根から同じ深さのノードを左から順に（階層ごとに）探索していく方法です。"
     },
     {
       type: "input",
       text: "設問6 Ⅱ(1): 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>【行きがけ順】</span>で探索をした場合の順序を答えなさい。",
       image: "image_2abc0b.png",
-      answer: "ABDHIMNEJCFKOGLPQ"
+      answer: "ABDHIMNEJCFKOGLPQ",
+      explanation: "行きがけ順（先行順）は、「親 → 左の部分木 → 右の部分木」の順に探索する方法です。ノードに最初に出会ったタイミングで訪問します。"
     },
     {
       type: "input",
       text: "設問6 Ⅱ(2): 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>【通りがけ順】</span>で探索をした場合の順序を答えなさい。",
       image: "image_2abc0b.png",
-      answer: "MHDINBEJAFOKCGLPQ"
+      answer: "MHDINBEJAFOKCGLPQ",
+      explanation: "通りがけ順（中間順）は、「左の部分木 → 親 → 右の部分木」の順に探索する方法です。ノードの下を通り抜けるタイミングで訪問します。"
     },
     {
       type: "input",
       text: "設問6 Ⅱ(3): 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>【帰りがけ順】</span>で探索をした場合の順序を答えなさい。",
       image: "image_2abc0b.png",
-      answer: "HMNIDJEBOKFPQLGCA"
+      answer: "HMNIDJEBOKFPQLGCA",
+      explanation: "帰りがけ順（後行順）は、「左の部分木 → 右の部分木 → 親」の順に探索する方法です。ノードから親へ戻る直前に訪問します。"
     },
 
     {
@@ -361,7 +374,8 @@
         "V={1,2,3,4,5}, E={<2,1>, <5,2>, <3,1>, <2,3>, <3,2>, <3,4>}",
         "V={1,2,3,4}, E={<1,2>, <2,3>, <3,4>, <4,1>}"
       ],
-      answerIndex: 0
+      answerIndex: 0,
+      explanation: "Vは頂点の集合、Eは有向辺(エッジ)の集合で <始点, 終点> のペアで表します。矢印の向きとペアの順序が一致しているものを選びます。"
     },
     {
       type: "choice",
@@ -373,7 +387,8 @@
         "隣接行列1行目: [0, 1, 0, 0, 0] / 接続行列a列: 頂点1=1, 頂点2=-1, 他=0",
         "隣接行列1行目: [0, 0, 1, 1, 0] / 接続行列a列: 頂点1=-1, 頂点2=1, 他=0"
       ],
-      answerIndex: 0
+      answerIndex: 0,
+      explanation: "頂点1から出る辺はないため隣接行列の1行目は全て0です。また、辺aは頂点2から頂点1へ向かっているので、接続行列の列aは頂点1が1(入)、頂点2が-1(出)になります。"
     }
   ];
 
@@ -388,7 +403,7 @@
   let currentQuestionIndex = 0;
   let isAnswered = false;
   let wrongAnswers = [];
-  let autoNextTimeout = null; // 自動遷移用のタイマー変数
+  let autoNextTimeout = null;
 
   const startScreen = document.getElementById('start-screen');
   const quizScreen = document.getElementById('quiz-screen');
@@ -485,8 +500,9 @@
           resultHTML += `
             <div class="review-item">
               <p class="review-q">Q. ${cleanQ}</p>
-              <p class="review-ans" style="color:#636e72;">あなたの解答： <span style="color:#d63031; font-weight:bold;">${item.userAns}</span></p>
+              <p class="review-ans" style="color:#636e72;">あなたの解答： <span style="color:#d63031; font-weight:bold; text-decoration:line-through;">${item.userAns}</span></p>
               <p class="review-ans" style="color:#00b894; font-weight:bold;">正しい解答： ${item.correctAns}</p>
+              <div class="review-explanation"><strong>💡 解説:</strong><br>${item.explanation}</div>
             </div>
           `;
         });
@@ -520,24 +536,23 @@
     if (isCorrect) {
       feedback.textContent = "✨ 正解！";
       feedback.className = "correct";
-      autoNextTimeout = setTimeout(goToNextQuestion, 800); // 0.8秒後に自動遷移
     } else {
       selectedBtn.style.backgroundColor = '#f8d7da';
       selectedBtn.style.borderColor = '#f5c6cb';
       selectedBtn.style.color = '#721c24';
-      feedback.textContent = "❌ 不正解...";
+      feedback.textContent = "❌ 不正解... (あとで復習できます)";
       feedback.className = "incorrect";
-      
-      correctAnswerDisplay.innerHTML = `正解は: <strong>${correctText}</strong>`;
-      correctAnswerDisplay.style.display = "block";
 
       wrongAnswers.push({
         question: questions[currentQuestionIndex].text,
         userAns: selectedBtn.innerHTML,
-        correctAns: correctText
+        correctAns: correctText,
+        explanation: questions[currentQuestionIndex].explanation
       });
-      autoNextTimeout = setTimeout(goToNextQuestion, 3500); // 間違えた場合は解説を読むために3.5秒待つ
     }
+    
+    // 正解・不正解にかかわらず0.5秒で次へ進む
+    autoNextTimeout = setTimeout(goToNextQuestion, 500);
     
     nextBtn.style.display = "inline-block";
     nextBtn.focus();
@@ -560,22 +575,22 @@
       feedback.className = "correct";
       textInput.style.borderColor = '#00b894';
       textInput.style.backgroundColor = '#d4edda';
-      autoNextTimeout = setTimeout(goToNextQuestion, 800); // 0.8秒後に自動遷移
     } else {
-      feedback.textContent = "❌ 不正解...";
+      feedback.textContent = "❌ 不正解... (あとで復習できます)";
       feedback.className = "incorrect";
       textInput.style.borderColor = '#d63031';
       textInput.style.backgroundColor = '#f8d7da';
-      correctAnswerDisplay.innerHTML = `正解は: <strong>${q.answer}</strong>`;
-      correctAnswerDisplay.style.display = "block";
 
       wrongAnswers.push({
         question: q.text,
         userAns: userAnswerRaw,
-        correctAns: q.answer
+        correctAns: q.answer,
+        explanation: q.explanation
       });
-      autoNextTimeout = setTimeout(goToNextQuestion, 3500); // 間違えた場合は解説を読むために3.5秒待つ
     }
+    
+    // 正解・不正解にかかわらず0.5秒で次へ進む
+    autoNextTimeout = setTimeout(goToNextQuestion, 500);
     
     nextBtn.style.display = "inline-block";
     nextBtn.focus();
