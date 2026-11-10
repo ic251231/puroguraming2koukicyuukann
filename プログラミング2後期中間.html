@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第３回小テスト対策 フラッシュカード</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+  }
+  
+  #app {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    width: 90%;
+    max-width: 780px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    padding: 40px;
+    text-align: center;
+    margin: 20px;
+  }
+
+  /* --- スタート画面・終了画面 --- */
+  .mode-btn {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 15px auto;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .normal-mode {
+    background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+  }
+  .random-mode {
+    background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+    box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+  }
+  .mode-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+
+  .review-container {
+    text-align: left;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 2px solid #ff7675;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  }
+  .review-item {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #dfe6e9;
+  }
+  .review-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .review-q { font-weight: bold; font-size: 0.95em; line-height: 1.5; margin: 0 0 8px 0; }
+  .review-ans { font-size: 0.95em; margin: 5px 0; }
+  .review-explanation { 
+    font-size: 0.9em; 
+    color: #0984e3; 
+    background: #e3f2fd; 
+    padding: 10px; 
+    border-radius: 8px; 
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* --- クイズ画面 --- */
+  .progress {
+    font-size: 0.95em;
+    color: #636e72;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .question-text {
+    font-size: 1.15em;
+    margin-bottom: 25px;
+    line-height: 1.8;
+    text-align: left;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    overflow-x: auto;
+  }
+
+  .target-blank {
+    color: #d63031;
+    font-weight: bold;
+    font-size: 1.2em;
+    background: #ffeaa7;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #fdcb6e;
+  }
+
+  .question-instruction {
+    font-weight: bold;
+    color: #0984e3;
+    margin-top: 15px;
+    display: block;
+    text-align: center;
+  }
+
+  /* 行列テーブル用のスタイル */
+  .matrix-table {
+    border-collapse: collapse;
+    margin: 15px auto;
+    font-size: 1.1em;
+    text-align: center;
+    background: #fff;
+  }
+  .matrix-table th, .matrix-table td {
+    border: 1px solid #333;
+    width: 48px;
+    height: 40px;
+  }
+  .matrix-table th {
+    background-color: #f8f9fa;
+    color: #d63031;
+    font-weight: bold;
+    border: none;
+  }
+  .matrix-table td {
+    color: #d63031;
+    font-weight: 500;
+  }
+  .matrix-table .corner {
+    border: none;
+    background: transparent;
+  }
+
+  .question-image { margin-bottom: 25px; display: none; text-align: center;}
+  .question-image img {
+    max-width: 100%;
+    height: auto;
+    max-height: 260px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    object-fit: contain;
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  @media (max-width: 600px) { .choices { grid-template-columns: 1fr; } }
+
+  .choice-btn {
+    padding: 15px 20px;
+    font-size: 1.05em;
+    font-family: inherit;
+    background-color: #ffffff;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+    color: #2d3436;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  }
+
+  .choice-btn:hover:not(:disabled) {
+    background-color: #f1f2f6;
+    border-color: #a4b0be;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+  }
+
+  .input-container {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  input[type="text"] {
+    width: 90%;
+    padding: 15px;
+    font-size: 1.3em;
+    font-family: monospace;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: border-color 0.3s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  }
+  input[type="text"]:focus { outline: none; border-color: #74b9ff; }
+
+  .submit-btn {
+    padding: 15px 40px;
+    font-size: 1.1em;
+    font-weight: bold;
+    background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+  }
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+  }
+
+  #feedback {
+    margin-top: 25px;
+    font-size: 1.4em;
+    font-weight: bold;
+    min-height: 1.5em;
+  }
+  .correct { color: #00b894; animation: popIn 0.5s ease; }
+  .incorrect { color: #d63031; animation: popIn 0.5s ease; }
+  
+  @keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .correct-answer-display {
+    color: #d63031;
+    font-size: 1.1em;
+    margin-top: 10px;
+    display: none;
+    background: #ff767522;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  #next-btn {
+    margin-top: 25px;
+    padding: 12px 35px;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: #2d3436;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    display: none;
+    transition: background-color 0.2s;
+  }
+  #next-btn:hover { background-color: #636e72; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f2f6; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: #b2bec3; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #636e72; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- スタート画面 -->
+  <div id="start-screen">
+    <h1 style="color:#2d3436; margin-bottom: 5px;">第３回小テスト対策</h1>
+    <p style="color:#636e72; margin-bottom: 30px;">一問一答フラッシュカード</p>
+    <button class="mode-btn normal-mode" onclick="startQuiz(false)">順番に出題する</button>
+    <button class="mode-btn random-mode" onclick="startQuiz(true)">ランダム出題モード</button>
+  </div>
+
+  <!-- クイズ画面 -->
+  <div id="quiz-screen" style="display: none;">
+    <div class="progress" id="progress">1 / X</div>
+    <div class="question-text" id="question-text"></div>
+    <div class="question-image" id="question-image"></div>
+    
+    <div class="choices" id="choices-container"></div>
+    
+    <div class="input-container" id="input-container">
+      <p style="font-size: 0.9em; color: #636e72; margin: 0;">※A～Qのアルファベットを順に記入してください（空白・カンマ・矢印は無視されます）</p>
+      <input type="text" id="text-input" placeholder="例: ABCDEFG..." autocomplete="off">
+      <button class="submit-btn" id="submit-btn">解答する</button>
+    </div>
+
+    <div id="feedback"></div>
+    <div id="correct-answer-display" class="correct-answer-display"></div>
+    <button id="next-btn">次の問題へ (自動で進みます)</button>
+  </div>
+</div>
+
+<script>
+  // 共通の問題文テンプレート
+  const baseText1 = "データの( ① ) をコンピュータで処理するために、( ② ) に記憶しなければならない。この記憶方法を与えるのが ( ③ ) である。( ① ) を (③)に従ってメモリ上に実現することを ( ④ ) あるいは配置という。";
+  const baseText2a = "図1の連結リストに対して data111の後ろに300番地にdata150を挿入する過程。<br>i) ヘッドノード( ① )番地のポインタ部のデータの( ② )番地のノードから探索開始。<br>ii) 200番地のデータ部は( ③ )で該当ノード発見。アドレス( ④ )番地をかえす。<br>iii) 200番地のノードのポインタ部の値( ⑤ )をdata( ⑥ )のノードのポインタ部に格納。新ノードアドレス( ⑦ )番地を( ⑧ )番地のノードのポインタ部に格納。";
+  const baseText2b = "連結リストからdata550を削除する過程。<br>ii) 200番地は該当せず、ポインタ部の値の( ① )番地のノードに移動。<br>iii) ( ① )番地のデータ部は( ② )で発見。アドレス( ③ )をかえす。<br>iv) アドレス( ④ )のポインタ部の値( ⑤ )を、アドレス( ⑥ )番地のノードのポインタ部の値( ⑦ )に変更する。";
+  const baseText3 = "s, t, r, a, w, b, e, r, r, y, a, v, o, c, a, d, o の順にデータをキューに格納したとき、5番目に取り出せるデータは ( ① ) であり、スタックに格納したとき、6番目に取り出せるデータは ( ② ) である。";
+  const baseText4 = "スタックとキューの2つのデータ構造がある。次の手続きを順に実行した場合、変数x=( ① ), y=( ② ), z=( ③ ) に代入されるデータはどれか。<br><small>enq(a)⇒push(b)⇒push(c)⇒enq(d)⇒enq(e)⇒enq(f)⇒deq()⇒push(g)⇒push(deq())⇒enq(h)⇒push(i)⇒push(deq())⇒enq(pop())⇒enq(j)⇒x←pop()⇒enq(pop())⇒y←pop()⇒push(deq())⇒push(deq())⇒z←deq()</small>";
+  const baseText5_1 = "木とは( ① ) または、親子関係の ( ② ) や再帰的な構造などを表すのに適したデータ構造である。図の中で、○が ( ③ ), 線が ( ④ )、最も上にあるノードは、( ⑤ ) と呼ぶ。各ノードにとって ( ⑥ ) は1つである。";
+  const baseText5_2 = "木の中のあるノードに着目した場合、 ( ① ) の一部分である木のことを部分木という。各ノードが持つ子の数を ( ② ) といい、すべてのノードの度数がn以下である木をn進木と呼ぶ。また、葉のレベルの最大値、木の高さは根から最も遠い葉までの ( ③ ) で表す。ノードや ( ④ ) がまったく存在しない木のことを空木と呼ぶ。";
+
+  // 設問7 Ⅰ の解答テンプレート
+  const baseText7_1_1 = "設問7 Ⅰ(1): 図のグラフGを定義に従って記述しなさい。<br>V = (1, 2, 3, 4, ( ① )) ,<br>E = (<2, 1>, <1, ( ② )>, <2, 4>, <4, 2>, <4, ( ③ )>, <5, 1>, <5, 4>, <4, 5>, <3, ( ④ )>)";
+  const baseText7_1_2 = "設問7 Ⅰ(2): 各頂点の次数を答えなさい。<br>入次数  1 : ( ① ),  2 : ( ② ),  3 : ( ③ ),  4 : ( ④ ),  5 : ( ⑤ )<br>出次数  1 : ( ⑥ ),  2 : ( ⑦ ),  3 : ( ⑧ ),  4 : ( ⑨ ),  5 : ( ⑩ )";
+  const baseText7_1_3 = "設問7 Ⅰ(3): 頂点2と頂点5の間の距離を求めなさい。<br>距離： ( ① )";
+
+  // 設問7 Ⅱ(1) 隣接行列のテーブル生成関数
+  function makeAdjMatrix(target) {
+    const vals = {
+      '①':'1', '②':'1',
+      '③':'1', '④':'1', '⑤':'1',
+      '⑥':'0',
+      '⑦':'1'
+    };
+    function c(label) {
+      return label === target ? `<span class="target-blank">( ${label} )</span>` : vals[label];
+    }
+    return `設問7 Ⅱ(1): 以下の有向グラフの<strong>隣接行列</strong>を完成させなさい。
+    <table class="matrix-table">
+      <tr><th class="corner"></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+      <tr><th>1</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><th>2</th><td>${c('①')}</td><td>0</td><td>${c('②')}</td><td>0</td><td>0</td></tr>
+      <tr><th>3</th><td>${c('③')}</td><td>${c('④')}</td><td>0</td><td>${c('⑤')}</td><td>0</td></tr>
+      <tr><th>4</th><td>0</td><td>0</td><td>0</td><td>${c('⑥')}</td><td>0</td></tr>
+      <tr><th>5</th><td>0</td><td>${c('⑦')}</td><td>0</td><td>0</td><td>0</td></tr>
+    </table>
+    <span class="question-instruction">${target} に入る数字を選びなさい。</span>`;
+  }
+
+  // 設問7 Ⅱ(2) 接続行列のテーブル生成関数
+  function makeIncMatrix(target) {
+    const vals = {
+      '①':'1',  '②':'1',
+      '③':'-1', '④':'1',  '⑤':'-1', '⑥':'1',
+      '⑦':'-1', '⑧':'1',  '⑨':'-1', '⑩':'-1',
+      '⑪':'1',
+      '⑫':'-1'
+    };
+    function c(label) {
+      return label === target ? `<span class="target-blank">( ${label} )</span>` : vals[label];
+    }
+    return `設問7 Ⅱ(2): 以下の有向グラフの<strong>接続行列</strong>を完成させなさい。
+    <table class="matrix-table">
+      <tr><th class="corner"></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th></tr>
+      <tr><th>1</th><td>${c('①')}</td><td>0</td><td>${c('②')}</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><th>2</th><td>${c('③')}</td><td>${c('④')}</td><td>0</td><td>${c('⑤')}</td><td>${c('⑥')}</td><td>0</td></tr>
+      <tr><th>3</th><td>0</td><td>0</td><td>${c('⑦')}</td><td>${c('⑧')}</td><td>${c('⑨')}</td><td>${c('⑩')}</td></tr>
+      <tr><th>4</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>${c('⑪')}</td></tr>
+      <tr><th>5</th><td>0</td><td>${c('⑫')}</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    </table>
+    <span class="question-instruction">${target} に入る数字を選びなさい。</span>`;
+  }
+
+  // 設問7 Ⅱ(3) 隣接リストのテンプレート
+  const baseText7_2_3 = "設問7 Ⅱ(3): 以下の有向グラフの<strong>隣接リスト</strong>を完成させなさい。<br>" +
+    "1 : ／ (なし)<br>" +
+    "2 : → [ ( ① ) ] → [ ( ② ) ／ ]<br>" +
+    "3 : → [ ( ③ ) ] → [ ( ④ ) ] → [ ( ⑤ ) ／ ]<br>" +
+    "4 : ／ (なし)<br>" +
+    "5 : → [ ( ⑥ ) ／ ]";
+
+  function highlight(text, target) {
+    return text.replace(`( ${target} )`, `<span class="target-blank">( ${target} )</span>`)
+               .replace(`(${target})`, `<span class="target-blank">(${target})</span>`);
+  }
+
+  let questions = [
+    // --- 設問1 ---
+    { type: "choice", text: highlight(baseText1, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["論理構造", "物理構造", "データ構造", "表現"], answerIndex: 0, explanation: "コンピュータで処理する対象となるデータのまとまりの構造を「論理構造」といいます。" },
+    { type: "choice", text: highlight(baseText1, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["ディスク", "レジスタ", "メモリ", "キャッシュ"], answerIndex: 2, explanation: "データを記憶し、コンピュータで処理するための主記憶装置は「メモリ」です。" },
+    { type: "choice", text: highlight(baseText1, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["論理構造", "物理構造", "データ構造", "表現"], answerIndex: 1, explanation: "論理構造をメモリ上にどう配置するかの実際の構造を「物理構造」といいます。" },
+    { type: "choice", text: highlight(baseText1, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["実装", "配置", "格納", "表現"], answerIndex: 3, explanation: "論理構造を物理構造に従ってメモリ上に実現することを「表現 (representation)」あるいは配置といいます。" },
+    
+    // --- 設問2(a) ---
+    { type: "choice", text: highlight(baseText2a, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["10", "100", "200", "300"], answerIndex: 0, explanation: "連結リストの先頭を指すヘッドノードのアドレスは「10」番地です。" },
+    { type: "choice", text: highlight(baseText2a, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["10", "111", "200", "300"], answerIndex: 2, explanation: "ヘッドノード(10番地)のポインタ部が指している次のノードのアドレスは「200」番地です。" },
+    { type: "choice", text: highlight(baseText2a, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["100", "111", "150", "550"], answerIndex: 1, explanation: "200番地のデータ部は「111」です。このノードの後ろにデータを挿入します。" },
+    { type: "choice", text: highlight(baseText2a, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["100", "200", "300", "550"], answerIndex: 1, explanation: "該当するノード（data111）が見つかったため、そのアドレスである「200」を返します。" },
+    { type: "choice", text: highlight(baseText2a, '⑤') + "<br><span class='question-instruction'>⑤に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["50", "100", "150", "300"], answerIndex: 1, explanation: "200番地のポインタ部の値「100」を、新しいノードのポインタ部へ引き継ぎます。" },
+    { type: "choice", text: highlight(baseText2a, '⑥') + "<br><span class='question-instruction'>⑥に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["100", "111", "150", "200"], answerIndex: 2, explanation: "新しく挿入するノードのデータは「150」です。" },
+    { type: "choice", text: highlight(baseText2a, '⑦') + "<br><span class='question-instruction'>⑦に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["100", "200", "300", "550"], answerIndex: 2, explanation: "新しく確保したノードのアドレスは「300」番地です。" },
+    { type: "choice", text: highlight(baseText2a, '⑧') + "<br><span class='question-instruction'>⑧に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["10", "100", "200", "300"], answerIndex: 2, explanation: "元のノード（「200」番地）のポインタ部を、新しいノードのアドレス(300)に更新して繋ぎ直します。" },
+
+    // --- 設問2(b) ---
+    { type: "choice", text: highlight(baseText2b, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["30", "50", "100", "200"], answerIndex: 2, explanation: "200番地は該当しないため、そのポインタ部が指す「100」番地のノードへ移動します。" },
+    { type: "choice", text: highlight(baseText2b, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["111", "150", "200", "550"], answerIndex: 3, explanation: "100番地のデータ部は「550」であり、これが削除対象のデータです。" },
+    { type: "choice", text: highlight(baseText2b, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["50", "100", "200", "550"], answerIndex: 1, explanation: "該当ノードが見つかったため、そのアドレス「100」を返します。" },
+    { type: "choice", text: highlight(baseText2b, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["50", "100", "200", "300"], answerIndex: 2, explanation: "削除するノードの「直前のノード」のアドレスは「200」番地です。" },
+    { type: "choice", text: highlight(baseText2b, '⑤') + "<br><span class='question-instruction'>⑤に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["50", "100", "200", "550"], answerIndex: 1, explanation: "200番地のポインタ部の値は現在「100」です。これを変更します。" },
+    { type: "choice", text: highlight(baseText2b, '⑥') + "<br><span class='question-instruction'>⑥に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["30", "50", "100", "200"], answerIndex: 2, explanation: "削除するノードのアドレスは「100」番地です。" },
+    { type: "choice", text: highlight(baseText2b, '⑦') + "<br><span class='question-instruction'>⑦に入る数字を選びなさい。</span>", image: "renketu.png", choices: ["30", "50", "100", "200"], answerIndex: 1, explanation: "削除するノードのポインタ部「50」を、直前のノード(200番地)のポインタ部に上書きして繋ぎ直します。" },
+
+    // --- 設問3 ---
+    { type: "choice", text: highlight(baseText3, '①') + "<br><span class='question-instruction'>①に入るデータを選びなさい。</span>", choices: ["r", "w", "v", "b"], answerIndex: 1, explanation: "キュー(待ち行列)はFIFO(先入れ先出し)です。入れた順「s, t, r, a, w...」に取り出されるため、5番目は「w」です。" },
+    { type: "choice", text: highlight(baseText3, '②') + "<br><span class='question-instruction'>②に入るデータを選びなさい。</span>", choices: ["r", "a", "v", "e"], answerIndex: 2, explanation: "スタックはLIFO(後入れ先出し)です。最後に入れた順「o, d, a, c, o, v...」に取り出されるため、6番目は「v」です。" },
+
+    // --- 設問4 ---
+    { type: "choice", text: highlight(baseText4, '①') + "<br><span class='question-instruction'>①(変数x)に入るデータを選びなさい。</span>", choices: ["i", "g", "e", "d"], answerIndex: 0, explanation: "直前に push(i) と push(deq()) すなわち push(e) が行われ、pop()でeが取り出された後、次の x←pop() で「i」が取り出されます。" },
+    { type: "choice", text: highlight(baseText4, '②') + "<br><span class='question-instruction'>②(変数y)に入るデータを選びなさい。</span>", choices: ["i", "g", "e", "f"], answerIndex: 1, explanation: "x←pop()の後、enq(pop())でdが取り出され、その次の y←pop() でスタックから「g」が取り出されます。" },
+    { type: "choice", text: highlight(baseText4, '③') + "<br><span class='question-instruction'>③(変数z)に入るデータを選びなさい。</span>", choices: ["h", "j", "e", "f"], answerIndex: 2, explanation: "キューの先頭から f, h が deq() された後、次の z←deq() で「e」が取り出されます。" },
+
+    // --- 設問5(1) ---
+    { type: "choice", text: highlight(baseText5_1, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", image: "tree.png", choices: ["上下関係", "順序関係", "同値関係", "集合関係"], answerIndex: 0, explanation: "木(ツリー)構造は、データの階層関係や「上下関係」を表すのに適しています。" },
+    { type: "choice", text: highlight(baseText5_1, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", image: "tree.png", choices: ["距離", "集合", "分類", "結合"], answerIndex: 2, explanation: "親子関係による「分類」などを表現します。" },
+    { type: "choice", text: highlight(baseText5_1, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", image: "tree.png", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 0, explanation: "図の中でデータを格納している○の部分を「ノード(節)」と呼びます。" },
+    { type: "choice", text: highlight(baseText5_1, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", image: "tree.png", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 1, explanation: "ノード同士を繋いでいる線のことを「枝(エッジ)」と呼びます。" },
+    { type: "choice", text: highlight(baseText5_1, '⑤') + "<br><span class='question-instruction'>⑤に入る語句を選びなさい。</span>", image: "tree.png", choices: ["ノード(節)", "枝(エッジ)", "根(ルート)", "葉(リーフ)"], answerIndex: 2, explanation: "木構造の頂点にあたる、最も上にあるノードを「根(ルート)」と呼びます。" },
+    { type: "choice", text: highlight(baseText5_1, '⑥') + "<br><span class='question-instruction'>⑥に入る語句を選びなさい。</span>", image: "tree.png", choices: ["子", "親", "兄弟", "孫"], answerIndex: 1, explanation: "木構造において、各ノードにとっての「親」ノードは常に1つだけです（根ノードは除く）。" },
+
+    // --- 設問5(2) ---
+    { type: "choice", text: highlight(baseText5_2, '①') + "<br><span class='question-instruction'>①に入る語句を選びなさい。</span>", choices: ["枝", "木", "葉", "根"], answerIndex: 1, explanation: "木の中の特定のノードを根とした、一部分の「木」のことを部分木といいます。" },
+    { type: "choice", text: highlight(baseText5_2, '②') + "<br><span class='question-instruction'>②に入る語句を選びなさい。</span>", choices: ["深さ", "高さ", "度数", "距離"], answerIndex: 2, explanation: "各ノードが持っている子ノードの数のことを「度数」といいます。" },
+    { type: "choice", text: highlight(baseText5_2, '③') + "<br><span class='question-instruction'>③に入る語句を選びなさい。</span>", choices: ["深さ", "高さ", "度数", "距離"], answerIndex: 3, explanation: "木の高さは、根から最も遠い葉までの「距離（エッジの数）」で表します。" },
+    { type: "choice", text: highlight(baseText5_2, '④') + "<br><span class='question-instruction'>④に入る語句を選びなさい。</span>", choices: ["枝", "木", "根", "葉"], answerIndex: 0, explanation: "ノードや「枝」がまったく存在しない木のことを空木(からぎ)と呼びます。" },
+
+    // --- 設問6 ---
+    {
+      type: "input",
+      text: "設問6 Ⅰ: 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>横型探索(幅優先探索)</span>をした場合の探索の順序を答えなさい。",
+      image: "image_2abc0b.png",
+      answer: "ABCDEFGHIJKLMNOPQ",
+      explanation: "横型探索（幅優先探索）は、根から同じ深さのノードを左から順に（階層ごとに）探索していく方法です。"
+    },
+    {
+      type: "input",
+      text: "設問6 Ⅱ(1): 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>【行きがけ順】</span>で探索をした場合の順序を答えなさい。",
+      image: "image_2abc0b.png",
+      answer: "ABDHIMNEJCFKOGLPQ",
+      explanation: "行きがけ順（先行順）は、「親 → 左の部分木 → 右の部分木」の順に探索する方法です。ノードに最初に出会ったタイミングで訪問します。"
+    },
+    {
+      type: "input",
+      text: "設問6 Ⅱ(2): 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>【通りがけ順】</span>で探索をした場合の順序を答えなさい。",
+      image: "image_2abc0b.png",
+      answer: "MHDINBEJAFOKCGPLQ",
+      explanation: "通りがけ順（中間順）は、「左の部分木 → 親 → 右の部分木」の順に探索する方法です。解答例の通り C→G→P→L→Q となります。"
+    },
+    {
+      type: "input",
+      text: "設問6 Ⅱ(3): 以下の図に対して<span style='color:#0984e3; font-weight:bold;'>【帰りがけ順】</span>で探索をした場合の順序を答えなさい。",
+      image: "image_2abc0b.png",
+      answer: "MHNIDJEBOKFPQLGCA",
+      explanation: "帰りがけ順（後行順）は、「左の部分木 → 右の部分木 → 親」の順に探索する方法です。解答例の通り M→H→N→I→D... となります。"
+    },
+
+    // --- 設問7 Ⅰ(1) グラフの定義 ---
+    { type: "choice", text: highlight(baseText7_1_1, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["3", "4", "5", "6"], answerIndex: 2, explanation: "頂点集合Vは1から5までの5つの頂点 V=(1, 2, 3, 4, 5) です。" },
+    { type: "choice", text: highlight(baseText7_1_1, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["2", "3", "4", "5"], answerIndex: 2, explanation: "頂点1から出ているエッジbは頂点4へ向かっているため、<1, 4> となります。" },
+    { type: "choice", text: highlight(baseText7_1_1, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["1", "2", "3", "5"], answerIndex: 2, explanation: "頂点4からは頂点2, 3, 5へエッジが出ています。前後に<4, 2>と<4, 5>があるため、ここはエッジeの <4, 3> です。" },
+    { type: "choice", text: highlight(baseText7_1_1, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["1", "2", "4", "5"], answerIndex: 3, explanation: "頂点3から出ているエッジiは頂点5へ向かっているため、<3, 5> となります。" },
+
+    // --- 設問7 Ⅰ(2) 入次数・出次数 ---
+    { type: "choice", text: highlight(baseText7_1_2, '①') + "<br><span class='question-instruction'>①（頂点1の入次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 2, explanation: "頂点1に入ってくる矢印は a(2→1) と f(5→1) の「2」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '②') + "<br><span class='question-instruction'>②（頂点2の入次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 1, explanation: "頂点2に入ってくる矢印は d(4→2) の「1」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '③') + "<br><span class='question-instruction'>③（頂点3の入次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 1, explanation: "頂点3に入ってくる矢印は e(4→3) の「1」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '④') + "<br><span class='question-instruction'>④（頂点4の入次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["1", "2", "3", "4"], answerIndex: 2, explanation: "頂点4に入ってくる矢印は b(1→4), c(2→4), g(5→4) の「3」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '⑤') + "<br><span class='question-instruction'>⑤（頂点5の入次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 2, explanation: "頂点5に入ってくる矢印は h(4→5), i(3→5) の「2」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '⑥') + "<br><span class='question-instruction'>⑥（頂点1の出次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 1, explanation: "頂点1から出ていく矢印は b(1→4) の「1」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '⑦') + "<br><span class='question-instruction'>⑦（頂点2の出次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 2, explanation: "頂点2から出ていく矢印は a(2→1), c(2→4) の「2」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '⑧') + "<br><span class='question-instruction'>⑧（頂点3の出次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 1, explanation: "頂点3から出ていく矢印は i(3→5) の「1」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '⑨') + "<br><span class='question-instruction'>⑨（頂点4の出次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["1", "2", "3", "4"], answerIndex: 2, explanation: "頂点4から出ていく矢印は d(4→2), e(4→3), h(4→5) の「3」本です。" },
+    { type: "choice", text: highlight(baseText7_1_2, '⑩') + "<br><span class='question-instruction'>⑩（頂点5の出次数）に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["0", "1", "2", "3"], answerIndex: 2, explanation: "頂点5から出ていく矢印は f(5→1), g(5→4) の「2」本です。" },
+
+    // --- 設問7 Ⅰ(3) 距離 ---
+    { type: "choice", text: highlight(baseText7_1_3, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", image: "image_2ab4e5.png", choices: ["1", "2", "3", "4"], answerIndex: 1, explanation: "頂点2から頂点5へは、頂点4を経由する最短経路（2→4→5）でエッジを2本通るため、距離は「2」です。" },
+
+    // --- 設問7 Ⅱ(1) 隣接行列の表問題 ---
+    { type: "choice", text: makeAdjMatrix('①'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "2行1列目：頂点2から頂点1へ向かう矢印aが存在するため、成分は「1」です。" },
+    { type: "choice", text: makeAdjMatrix('②'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "2行3列目：頂点2から頂点3へ向かう矢印dが存在するため、成分は「1」です。" },
+    { type: "choice", text: makeAdjMatrix('③'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "3行1列目：頂点3から頂点1へ向かう矢印cが存在するため、成分は「1」です。" },
+    { type: "choice", text: makeAdjMatrix('④'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "3行2列目：頂点3から頂点2へ向かう矢印eが存在するため、成分は「1」です。" },
+    { type: "choice", text: makeAdjMatrix('⑤'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "3行4列目：頂点3から頂点4へ向かう矢印fが存在するため、成分は「1」です。" },
+    { type: "choice", text: makeAdjMatrix('⑥'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 0, explanation: "4行4列目：頂点4から出る矢印は1本もないため、4行目の成分はすべて「0」です。" },
+    { type: "choice", text: makeAdjMatrix('⑦'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "5行2列目：頂点5から頂点2へ向かう矢印bが存在するため、成分は「1」です。" },
+
+    // --- 設問7 Ⅱ(2) 接続行列の表問題 ---
+    { type: "choice", text: makeIncMatrix('①'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "エッジa(2→1)は頂点1に入ってくる(終点)ため、1行a列の成分は「1」です。" },
+    { type: "choice", text: makeIncMatrix('②'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "エッジc(3→1)は頂点1に入ってくる(終点)ため、1行c列の成分は「1」です。" },
+    { type: "choice", text: makeIncMatrix('③'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 2, explanation: "エッジa(2→1)は頂点2から出ていく(始点)ため、2行a列の成分は「-1」です。" },
+    { type: "choice", text: makeIncMatrix('④'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "エッジb(5→2)は頂点2に入ってくる(終点)ため、2行b列の成分は「1」です。" },
+    { type: "choice", text: makeIncMatrix('⑤'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 2, explanation: "エッジd(2→3)は頂点2から出ていく(始点)ため、2行d列の成分は「-1」です。" },
+    { type: "choice", text: makeIncMatrix('⑥'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "エッジe(3→2)は頂点2に入ってくる(終点)ため、2行e列の成分は「1」です。" },
+    { type: "choice", text: makeIncMatrix('⑦'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 2, explanation: "エッジc(3→1)は頂点3から出ていく(始点)ため、3行c列の成分は「-1」です。" },
+    { type: "choice", text: makeIncMatrix('⑧'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "エッジd(2→3)は頂点3に入ってくる(終点)ため、3行d列の成分は「1」です。" },
+    { type: "choice", text: makeIncMatrix('⑨'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 2, explanation: "エッジe(3→2)は頂点3から出ていく(始点)ため、3行e列の成分は「-1」です。" },
+    { type: "choice", text: makeIncMatrix('⑩'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 2, explanation: "エッジf(3→4)は頂点3から出ていく(始点)ため、3行f列の成分は「-1」です。" },
+    { type: "choice", text: makeIncMatrix('⑪'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 1, explanation: "エッジf(3→4)は頂点4に入ってくる(終点)ため、4行f列の成分は「1」です。" },
+    { type: "choice", text: makeIncMatrix('⑫'), image: "image_2ab4c5.png", choices: ["0", "1", "-1", "2"], answerIndex: 2, explanation: "エッジb(5→2)は頂点5から出ていく(始点)ため、5行b列の成分は「-1」です。" },
+
+    // --- 設問7 Ⅱ(3) 隣接リストの問題 ---
+    { type: "choice", text: highlight(baseText7_2_3, '①') + "<br><span class='question-instruction'>①に入る数字を選びなさい。</span>", image: "image_2ab4c5.png", choices: ["1", "2", "3", "4"], answerIndex: 0, explanation: "頂点2から直接向かう先は頂点1と頂点3です。昇順に並べるため、最初は「1」が入ります。" },
+    { type: "choice", text: highlight(baseText7_2_3, '②') + "<br><span class='question-instruction'>②に入る数字を選びなさい。</span>", image: "image_2ab4c5.png", choices: ["1", "3", "4", "5"], answerIndex: 1, explanation: "頂点2から直接向かう先は頂点1と「3」です。" },
+    { type: "choice", text: highlight(baseText7_2_3, '③') + "<br><span class='question-instruction'>③に入る数字を選びなさい。</span>", image: "image_2ab4c5.png", choices: ["1", "2", "4", "5"], answerIndex: 0, explanation: "頂点3から直接向かう先は頂点1, 2, 4です。最初は「1」が入ります。" },
+    { type: "choice", text: highlight(baseText7_2_3, '④') + "<br><span class='question-instruction'>④に入る数字を選びなさい。</span>", image: "image_2ab4c5.png", choices: ["1", "2", "3", "4"], answerIndex: 1, explanation: "頂点3から直接向かう先は頂点1, 「2」, 4です。" },
+    { type: "choice", text: highlight(baseText7_2_3, '⑤') + "<br><span class='question-instruction'>⑤に入る数字を選びなさい。</span>", image: "image_2ab4c5.png", choices: ["2", "3", "4", "5"], answerIndex: 2, explanation: "頂点3から直接向かう先は頂点1, 2, 「4」です。" },
+    { type: "choice", text: highlight(baseText7_2_3, '⑥') + "<br><span class='question-instruction'>⑥に入る数字を選びなさい。</span>", image: "image_2ab4c5.png", choices: ["1", "2", "3", "4"], answerIndex: 1, explanation: "頂点5から直接向かう先は頂点「2」のみです。" }
+  ];
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  let currentQuestionIndex = 0;
+  let isAnswered = false;
+  let wrongAnswers = [];
+  let autoNextTimeout = null;
+
+  const startScreen = document.getElementById('start-screen');
+  const quizScreen = document.getElementById('quiz-screen');
+  const questionText = document.getElementById('question-text');
+  const questionImage = document.getElementById('question-image');
+  const choicesContainer = document.getElementById('choices-container');
+  const inputContainer = document.getElementById('input-container');
+  const textInput = document.getElementById('text-input');
+  const submitBtn = document.getElementById('submit-btn');
+  const feedback = document.getElementById('feedback');
+  const correctAnswerDisplay = document.getElementById('correct-answer-display');
+  const nextBtn = document.getElementById('next-btn');
+  const progress = document.getElementById('progress');
+
+  function startQuiz(isRandom) {
+    if (isRandom) {
+      shuffle(questions);
+    }
+    startScreen.style.display = 'none';
+    quizScreen.style.display = 'block';
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    clearTimeout(autoNextTimeout);
+    isAnswered = false;
+    feedback.textContent = "";
+    feedback.className = "";
+    correctAnswerDisplay.style.display = "none";
+    nextBtn.style.display = "none";
+    choicesContainer.innerHTML = "";
+    textInput.value = "";
+    textInput.disabled = false;
+    textInput.style.backgroundColor = "";
+    textInput.style.borderColor = "";
+    
+    const q = questions[currentQuestionIndex];
+    progress.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+    questionText.innerHTML = q.text;
+
+    if (q.image) {
+      questionImage.innerHTML = `<img src="${q.image}" alt="問題の図">`;
+      questionImage.style.display = "block";
+    } else {
+      questionImage.style.display = "none";
+    }
+
+    if (q.type === "choice") {
+      choicesContainer.style.display = "grid";
+      inputContainer.style.display = "none";
+      
+      let choiceObjects = q.choices.map((choiceText, index) => {
+        return { text: choiceText, isCorrect: (index === q.answerIndex) };
+      });
+      shuffle(choiceObjects);
+
+      choiceObjects.forEach((choiceObj) => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.innerHTML = choiceObj.text;
+        btn.onclick = () => handleChoice(choiceObj.isCorrect, btn, choiceObjects);
+        choicesContainer.appendChild(btn);
+      });
+    } else if (q.type === "input") {
+      choicesContainer.style.display = "none";
+      inputContainer.style.display = "flex";
+      setTimeout(() => textInput.focus(), 100);
+    }
+  }
+
+  function goToNextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      loadQuestion();
+    } else {
+      const appContent = document.getElementById('app');
+      let resultHTML = `<h2 style="font-size:2.2em; color:#6c5ce7; margin-bottom:10px;">🎉 クイズ完了！</h2>`;
+      
+      const correctCount = questions.length - wrongAnswers.length;
+      resultHTML += `<p style="font-size:1.3em; font-weight:bold; color:#2d3436; margin-bottom:20px;">正解数: ${correctCount} / ${questions.length}</p>`;
+
+      if (wrongAnswers.length === 0) {
+        resultHTML += `<p style="font-size:1.2em; color:#00b894; font-weight:bold; margin-bottom:30px;">全問正解です！素晴らしい！💯</p>`;
+      } else {
+        resultHTML += `<h3 style="color:#d63031; text-align:left; margin-bottom:10px;">⚠️ 間違えた問題の復習</h3>`;
+        resultHTML += `<div class="review-container">`;
+        
+        wrongAnswers.forEach(item => {
+          resultHTML += `
+            <div class="review-item">
+              <div class="review-q">${item.question}</div>
+              <p class="review-ans" style="color:#636e72;">あなたの解答： <span style="color:#d63031; font-weight:bold; text-decoration:line-through;">${item.userAns}</span></p>
+              <p class="review-ans" style="color:#00b894; font-weight:bold;">正しい解答： ${item.correctAns}</p>
+              <div class="review-explanation"><strong>💡 解説:</strong><br>${item.explanation}</div>
+            </div>
+          `;
+        });
+        
+        resultHTML += `</div>`;
+      }
+
+      resultHTML += `<button onclick="location.reload()" class="submit-btn" style="margin-top:10px;">スタート画面に戻る</button>`;
+      appContent.innerHTML = resultHTML;
+    }
+  }
+
+  function handleChoice(isCorrect, selectedBtn, allChoices) {
+    if (isAnswered) return;
+    isAnswered = true;
+    
+    const buttons = choicesContainer.querySelectorAll('.choice-btn');
+    buttons.forEach((btn, index) => {
+      btn.disabled = true;
+      btn.style.cursor = 'default';
+      if (allChoices[index].isCorrect) {
+        btn.style.backgroundColor = '#d4edda';
+        btn.style.borderColor = '#c3e6cb';
+        btn.style.color = '#155724';
+        btn.style.boxShadow = '0 0 10px rgba(40, 167, 69, 0.3)';
+      }
+    });
+
+    const correctText = allChoices.find(c => c.isCorrect).text;
+
+    if (isCorrect) {
+      feedback.textContent = "✨ 正解！";
+      feedback.className = "correct";
+    } else {
+      selectedBtn.style.backgroundColor = '#f8d7da';
+      selectedBtn.style.borderColor = '#f5c6cb';
+      selectedBtn.style.color = '#721c24';
+      feedback.textContent = "❌ 不正解... (あとで復習できます)";
+      feedback.className = "incorrect";
+
+      wrongAnswers.push({
+        question: questions[currentQuestionIndex].text,
+        userAns: selectedBtn.innerHTML,
+        correctAns: correctText,
+        explanation: questions[currentQuestionIndex].explanation
+      });
+    }
+    
+    autoNextTimeout = setTimeout(goToNextQuestion, 500);
+    nextBtn.style.display = "inline-block";
+    nextBtn.focus();
+  }
+
+  function handleInputSubmit() {
+    if (isAnswered) return;
+    const q = questions[currentQuestionIndex];
+    const userAnswerRaw = textInput.value;
+    const userAnswer = userAnswerRaw.replace(/[\s,→]/g, '').toUpperCase();
+    const correctAnswer = q.answer.replace(/[\s,→]/g, '').toUpperCase();
+
+    if (userAnswer === "") return;
+
+    isAnswered = true;
+    textInput.disabled = true;
+
+    if (userAnswer === correctAnswer) {
+      feedback.textContent = "✨ 正解！";
+      feedback.className = "correct";
+      textInput.style.borderColor = '#00b894';
+      textInput.style.backgroundColor = '#d4edda';
+    } else {
+      feedback.textContent = "❌ 不正解... (あとで復習できます)";
+      feedback.className = "incorrect";
+      textInput.style.borderColor = '#d63031';
+      textInput.style.backgroundColor = '#f8d7da';
+
+      wrongAnswers.push({
+        question: q.text,
+        userAns: userAnswerRaw,
+        correctAns: q.answer,
+        explanation: q.explanation
+      });
+    }
+    
+    autoNextTimeout = setTimeout(goToNextQuestion, 500);
+    nextBtn.style.display = "inline-block";
+    nextBtn.focus();
+  }
+
+  submitBtn.addEventListener('click', handleInputSubmit);
+
+  textInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleInputSubmit();
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    clearTimeout(autoNextTimeout);
+    goToNextQuestion();
+  });
+
+</script>
+</body>
+</html>
